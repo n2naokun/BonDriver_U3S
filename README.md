@@ -1,17 +1,19 @@
-# U3S BonDriver
+# BonDriver_U3S
 
-SK-MTVU3S向けの既存Linuxアプリケーションをベースに、Windows向けBonDriverを開発するプロジェクトです。
+SK-MTVU3S向けのWindows x64用BonDriverです。地デジ・BS・110度CSの受信と、複数台での同時受信に対応します。
 
 ## 導入
 
-MSVCでx64ビルドすると、`build/Release/` にHostとBonDriverの配布ファイルが出力されます。
+[GitHub Releases](https://github.com/n2naokun/BonDriver_U3S/releases) から `BonDriver_U3S-x64.zip` をダウンロードして展開します。
+
+SK-MTVU3Sには事前にWinUSBドライバーの割り当てが必要です。未設定の場合は、[Zadig](https://zadig.akeo.ie/) などでSK-MTVU3S（USB ID `3275:9015`）を選び、WinUSBを割り当てます。
 
 1. `U3SHost.exe`、`U3SHost.ini`、登録・解除用のCMDを同じフォルダーに置きます。TVTestを使うユーザーの通常権限で `InstallU3SHost.cmd` を実行すると、Hostが起動し、そのユーザーの次回ログオンから自動起動します。今回だけ起動する場合は `U3SHost.exe` を直接実行します。
 2. TVTest x64のBonDriver検索フォルダーに、`BonDriver_U3S.dll` と `BonDriver_U3S.ini` を置きます。DLLとINIは同じフォルダー・ベース名にします。
 3. WinUSBを割り当てたSK-MTVU3Sを接続し、TVTestで `BonDriver_U3S.dll` を選択します。
 4. チャンネルスキャンで受信したい空間を選びます。同梱INIにはBS・110度CSの選局表が入っています。地デジは設定不要で、物理13〜52chから受信できる局をTVTestが登録します。以前の地デジスキャン結果がある場合は再スキャンしてください。
 
-選局表の編集方法はINIのコメントに記載しています。編集後はTVTestでBonDriverを開き直し、変更した空間を再スキャンします。このDLLの出力には放送側のMULTI2スクランブルが残るため、スクランブル付きの放送を視聴するにはTVTest側の復号環境が必要です。
+選局表の編集方法はINIのコメントに記載しています。編集後はTVTestでBonDriverを開き直し、変更した空間を再スキャンします。このDLLの出力には放送側のMULTI2スクランブルが残るため、スクランブル付きの放送を視聴するには、TVTestやProxyExD側に対応する復号環境が必要です。
 
 複数台を使う場合は、同時受信する台数分のDLLとINIを `BonDriver_U3S_2.dll` と `BonDriver_U3S_2.ini` のように別名で用意します。Hostが受信枠の空いている個体を割り当てます。旧INIの `InstanceId` は無視します。各個体が同じアンテナ構成で受信できるように接続してください。
 
@@ -19,7 +21,7 @@ DLLの読み込みに失敗する場合は、TVTestがx64版か、Microsoft Visu
 
 自動起動は `UninstallU3SHost.cmd` で解除できます。登録を解除しても、稼働中のHostはログオフまたはプロセスを終了するまで利用できます。
 
-### LocalSystemのProxyExDサービスから接続する
+### ProxyExDサービスから接続する
 
 Hostを普段使うユーザーで起動します。LocalSystemのProxyExDは、既定でコンソールにログオン中のユーザーのHostに接続します。接続先を固定する場合は、管理者が64ビットの `HKLM\SOFTWARE\U3SHost` に文字列値 `HostSid` として対象ユーザーのSIDを設定します。TVTestとProxyExDが同時に直接受信する場合は、受信要求ごとに別の個体が割り当てられます。
 
@@ -32,7 +34,7 @@ Hostを起動するユーザーで `Create-ProxyExD-HostSid.cmd` を実行する
 
 配布ZIPの `card-reader/winscard.dll` は、U3SHost経由で内蔵カードリーダーを使うx64用DLLです。HostがチューナーとカードへのUSBアクセスを管理するため、同じ個体で受信とカード通信を併用できます。
 
-対応する復号器で、このDLLのパスを指定して読み込みます。WindowsのシステムDLLは上書きしないでください。通常のカードリーダーを利用する構成では、このDLLの導入は不要です。
+対応する復号器で、このDLLのパスを指定して読み込みます。WindowsのシステムDLLは上書きしないでください。外部カードリーダーを利用する構成では、このDLLの導入は不要です。
 
 カードの共有方式と接続上限は `U3SHost.ini` の `[Card]` で設定します。各項目の説明と設定例はINI内のコメントを参照してください。
 
