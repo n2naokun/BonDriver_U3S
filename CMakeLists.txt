@@ -31,3 +31,10 @@ add_library(BonDriver_U3S SHARED src/bondriver.cpp src/channel_config.cpp)
 target_link_libraries(BonDriver_U3S PRIVATE u3s_host_ipc)
 file(GENERATE OUTPUT "$<TARGET_FILE_DIR:BonDriver_U3S>/BonDriver_U3S.ini"
     INPUT "${CMAKE_CURRENT_SOURCE_DIR}/BonDriver_U3S.ini")
+
+add_library(u3s-winscard SHARED src/winscard.cpp src/winscard.def)
+target_link_libraries(u3s-winscard PRIVATE u3s_host_ipc)
+set_target_properties(u3s-winscard PROPERTIES
+    OUTPUT_NAME winscard
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/card-reader"
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/card-reader")

@@ -28,6 +28,14 @@ Hostを普段使うユーザーで起動します。LocalSystemのProxyExDは、
 
 Hostを起動するユーザーで `Create-ProxyExD-HostSid.cmd` を実行すると、同じフォルダーに登録用と解除用のREGが生成されます。管理者権限で `Set-ProxyExD-HostSid.reg` を取り込むと固定指定が有効になります。`Remove-ProxyExD-HostSid.reg` を取り込むと `HostSid` の値だけが削除され、LocalSystemでは次回の接続から自動検出に戻ります。固定指定はHostの起動や自動起動の登録とは別です。配布時は生成用CMDを同梱し、登録用REGは利用者のPCで生成します。
 
+## 内蔵カードリーダーを使う場合
+
+配布ZIPの `card-reader/winscard.dll` は、U3SHost経由で内蔵カードリーダーを使うx64用DLLです。HostがチューナーとカードへのUSBアクセスを管理するため、同じ個体で受信とカード通信を併用できます。
+
+対応する復号器で、このDLLのパスを指定して読み込みます。WindowsのシステムDLLは上書きしないでください。通常のカードリーダーを利用する構成では、このDLLの導入は不要です。
+
+カードの共有方式と接続上限は `U3SHost.ini` の `[Card]` で設定します。各項目の説明と設定例はINI内のコメントを参照してください。
+
 ## ソースからビルド
 
 Windows上でCMake 3.21以降と、MSVCのC++デスクトップ開発環境を使用します。Visual Studioのジェネレーターでx64を指定します。
@@ -37,7 +45,7 @@ cmake -S . -B build -A x64
 cmake --build build --config Release
 ```
 
-成果物は `build/Release/` に出力されます。配布ZIPを使う場合はビルド不要です。
+BonDriverとHostは `build/Release/`、内蔵カードリーダー用DLLは `build/card-reader/Release/` に出力されます。配布ZIPを使う場合はビルド不要です。
 
 ## ライセンス
 
