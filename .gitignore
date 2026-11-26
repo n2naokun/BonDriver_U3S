@@ -1,0 +1,12 @@
+# ビルド生成物
+/build/
+/out/
+/.vs/
+*.obj
+*.pdb
+*.ilk
+
+# ローカルのドライバー導入ツールと接続先REG
+/zadig-*.exe
+Set-ProxyExD-HostSid.reg
+Remove-ProxyExD-HostSid.reg
